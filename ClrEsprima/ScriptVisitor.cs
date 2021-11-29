@@ -7,6 +7,7 @@ namespace ClrEsprima
     {
         public string Key;
         public string Value;
+        public string FileName;
     }
 
 
@@ -17,6 +18,7 @@ namespace ClrEsprima
 
 
         public System.Collections.Generic.List<TranslationData> Translations;
+        public string CurrentScriptPath;
 
 
         public ScriptVisitor()
@@ -26,7 +28,24 @@ namespace ClrEsprima
         }
 
 
-        public static TranslationData GetArguments(Esprima.Ast.CallExpression callExpression)
+        public void VisitFile()
+        {
+            VisitFile(this.CurrentScriptPath);
+        }
+
+
+        public void VisitFile(string file)
+        {
+            string contents = System.IO.File.ReadAllText(file, System.Text.Encoding.UTF8);
+            Esprima.JavaScriptParser parser = new Esprima.JavaScriptParser(contents);
+            Esprima.Ast.Script ast = parser.ParseScript();
+
+            this.Visit(ast);
+        }
+
+
+
+        public TranslationData GetArguments(Esprima.Ast.CallExpression callExpression)
         {
             TranslationData td = new TranslationData();
 
@@ -49,6 +68,8 @@ namespace ClrEsprima
                         td.Key = y.StringValue;
                     else
                         td.Value = y.StringValue;
+
+                    td.FileName = this.CurrentScriptPath;
                 }
                 // else { System.Console.WriteLine(x.Type); }
 

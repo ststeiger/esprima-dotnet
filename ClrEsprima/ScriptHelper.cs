@@ -62,6 +62,16 @@ try { } catch (evil) { }
         }
 
 
+        public static void VisitScript(string file)
+        {
+            string contents = System.IO.File.ReadAllText(file, System.Text.Encoding.UTF8);
+            Esprima.JavaScriptParser parser = new Esprima.JavaScriptParser(contents);
+            Esprima.Ast.Script ast = parser.ParseScript();
+
+            VisitScript(ast);
+        }
+
+
         public static void VisitScript(Esprima.Ast.Node root)
         {
             if (root == null)

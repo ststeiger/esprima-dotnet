@@ -18,13 +18,8 @@ namespace ClrEsprima
             {
                 try
                 {
-
-                    string contents = System.IO.File.ReadAllText(file, System.Text.Encoding.UTF8);
-                    Esprima.JavaScriptParser parser = new Esprima.JavaScriptParser(contents);
-                    Esprima.Ast.Script ast = parser.ParseScript();
-
-                    // VisitScript(ast);
-                    visitor.Visit(ast);
+                    visitor.CurrentScriptPath = file;
+                    visitor.VisitFile();
                 }
                 catch (System.Exception ex)
                 {
